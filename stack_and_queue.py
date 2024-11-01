@@ -9,6 +9,7 @@
 # Fuentes consultadas:
 # http://www.juanjoconti.com/posts/2010/07/22/pilas-y-cola-en-python/
 
+
 class Stack:
     ''' Clase para implementar una Pila de comportamiento estricto que solo permite operaciones de push y pop
     '''

@@ -3,6 +3,7 @@
 from time import sleep 
 from random import randint
 from funciones import *
+from valores import *
 import menu_interactive as interac
 import music as m
 import text as t
@@ -10,14 +11,8 @@ import money as money
 
 limpiar()
 m.Init()
-
-# 
-# DECLARACIÓN VARIABLES --
-registroPJ = Queue();       registroE = Queue()
-vidaPJ = 2500; vidaE = 0;  totalPJ = 0;  totalE = 0; ataquePJ = 0; ataqueE = 0;  ApromE = 0;
-ApromPJ = 0;   Round = 1;  upgrade = 0;  chk = 0;    music = 0;    gameover = 0; option = 0;
-check = 0;     curacion = 1500;  i = 0;  z = 0;      cantm = 0;    newvidaPJ = 0; vendido = [0,0,0]
-personaje = "Peleador"; NoOption="Esta opción no es válida"; teclastr=""
+registroPJ = Queue()
+registroE = Queue()
 
 # 
 # PANTALLA DE CARGA -- 
@@ -50,26 +45,29 @@ while True:
                 print(teclastr)
                 sleep(1)
                 if tecla==b'N' or tecla==b'n' :
-                    m.Stop(); upgrade=0; Round=1
-                    check=0; chk=0; limpiar();break
+                    m.Stop(); upgrade=0; Round=1; check=0;
+                    chk=0; limpiar(); roundm=0; break
                 elif tecla==b'S' or tecla==b's':
                     limpiar()
                     print("Cargando combate . . .")
                     sleep(1)
                     if (newvidaPJ != 0):vidaPJ = newvidaPJ
                     else: vidaPJ = 2500
-                    totalPJ = 0; totalE = 0; ApromPJ = 0; ApromE = 0;  i = 0;      z = 0
+                    totalPJ = 0; totalE = 0; ApromPJ = 0; ApromE = 0; i = 0; z = 0;
                     if (check==1) and (chk==2): vidaPJ=vidaPJ+upgrade
                     for x in range(0,registroE.size()): registroE.dequeue()
                     for y in range(0,registroPJ.size()): registroPJ.dequeue()
                     vidaE=(t.vidaEXround(Round))
                     print(f"\nInicia Combate!! RONDA ",Round)
-                    t.level(Round)
+                    t.level(Round,zona)
                     if (Round == 6):
                         m.Stop(); sleep(1)
                         m.TemaBoss()
                         sleep(1); t.jefe()
-                    print("\nTu vida: ",vidaPJ," Su vida: ",vidaE)
+                        print("\nTu vida: ",vidaPJ," Su vida: ",vidaE)
+                    else:
+                        print("\nTu vida: ",vidaPJ," Su vida: ",vidaE)
+                        sleep(1)
                     # 
                     # COMBATE ---
                     while (vidaPJ > 0) and (vidaE > 0):
@@ -126,22 +124,22 @@ while True:
                         if gameover==1: break
                     # 
                     # DATOS FINALES Y RESULTADO ---
-                    t.status(vidaPJ,vidaE,Round,z)
+                    t.status(vidaPJ,vidaE,Round,z,zona)
                     ApromPJ = totalPJ / registroPJ.size()
-                    ApromE,cantm = t.oneshot(registroE,totalE,cantm)
+                    ApromE,roundm = t.oneshot(registroE,totalE,roundm)
                     t.resultados(registroPJ,totalPJ,ApromPJ,ApromE,totalE,registroE)
-                    if gameover==0: cantm = money.moneyxR(cantm,Round,vidaPJ)
-                    if personaje=="Peleador": cantm = t.habP(vidaPJ,cantm,Round)
+                    if gameover==0: roundm = money.moneyxR(roundm,Round,vidaPJ)
+                    if personaje=="Peleador": roundm = t.habP(vidaPJ,roundm,Round)
                     sleep(0.4)
                     if (vidaPJ <= 0) or (Round == 6):
                         m.Stop(); sleep(0.5)
                         if (vidaPJ <= 0) or (gameover == 1):
-                            m.GameOver(); cantm=cantm/2; print(f"\nPenalización de Gameover - Monedas / 2\nMonedas:{cantm}")
-                        if (Round == 6) and (vidaPJ > 0) and (gameover == 0): 
-                            print("Lograste derrotar al jefe!! ( + $250 monedas )")
-                            cantm = cantm +  250; m.Win();
+                            m.GameOver(); cantm=cantm+(roundm/2); print(f"\nPenalización de Gameover - Monedas / 2\nMonedas: {roundm/2}")
+                        if (Round == 6) and (vidaPJ > 0) and (gameover == 0):
+                            print("Lograste derrotar al jefe!! ( + $150 monedas )")
+                            cantm = cantm + roundm + 150; m.Win(); zona = zona + 1;
                         sleep(11); Round = 1; limpiar(); m.Stop();
-                        gameover = 0; upgrade = 0; check = 0
+                        gameover = 0; upgrade = 0; check = 0; roundm = 0
                         break
                     else: Round = Round + 1; continue
                 else:print(NoOption); t.sleep(1); limpiar()

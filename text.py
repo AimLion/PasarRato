@@ -13,13 +13,13 @@ m.Init()
 def jefe():
     '''Método enfocado en la presentación del Jefe'''
     txt0 = "\nAlgo pasa . . ."
-    txt1 = "\nEste nivel no debería existir . . ."
+    txt1 = "Este nivel no debería existir . . ."
     txt2 = "\n-Sientes corrientes de viento rodeandote- . . ."
     txt3 = "\nLos enemigos no están . . ."
-    txt4 = "\nA donde se han ido? . . ."
+    txt4 = "A donde se han ido? . . ."
     txt5 = "\n-Una voz se escucha al fondo- . . ."
     txt6 = "\nTodos se han reunido contra ti . . ."
-    txt7 = "\nEsta es la batalla final . . ."
+    txt7 = "Esta es la batalla final . . ."
 
     for x in range(0,8):
         match x:
@@ -34,15 +34,15 @@ def jefe():
         if (x != 7): sleep(2)
         else: sleep(1)
 
-def status(vidaPJ,vidaE,Round,z):
+def status(vidaPJ,vidaE,Round,z,zona):
     '''Muestra los Resultados al Final de cada Ronda parte 1'''
     if (vidaE <= 0) and (vidaPJ>0): print(F"\nGran combate!! Has sobrevivido ",z," turnos con ",vidaPJ," de vida")
     elif(vidaE<=0) and (vidaPJ<=0):
         print(f"\nA sido un gran combate, se declara un empate.")
-        print(f"Llegaste hasta el nivel: ",Round)
+        print(f"\nLlegaste hasta el round ",Round,"En la zona ",zona)
     else:
         print(f"\nBuen intento, ha sobrevivido el enemigo con ",vidaE," de vida")
-        print(f"Llegaste hasta el nivel: ",Round)
+        print(f"\nLlegaste hasta el round: ",Round,"En la zona ",zona)
 
 def resultados(registroPJ,totalPJ,ApromPJ,ApromE,totalE,registroE):
     '''Muestra los Resultados al Final de cada Ronda parte 2'''
@@ -83,24 +83,57 @@ def oneshot(registroE,totalE,money):
     else: ApromE = totalE / registroE.size()
     return ApromE,money
 
-def level(Round):
+def zonalv(zona):
+    '''Define la zona de juego'''
+    lv1 = ""; lv2 = ""; lv3 = ""; lv4 = ""; lv5 = ""; lv6 = ""; nombre = ""
+    match zona:
+        case 1:
+            nombre = "las Llanuras Solitarias"
+            lv1 = "Ø     O--O |\n|  \   /   | |\n|   \ /    | |\n|    O     O"
+            lv2 = "O     O--O |\n|  \   /   | |\n|   \ /    | |\n|    Ø     O"
+            lv3 = "O     Ø--O |\n|  \   /   | |\n|   \ /    | |\n|    O     O"
+            lv4 = "O     O--Ø |\n|  \   /   | |\n|   \ /    | |\n|    O     O"
+            lv5 = "O     O--O |\n|  \   /   | |\n|   \ /    | |\n|    O     Ø"
+            lv6 = "| O     O--O |\n|  \   /   | |\n|   \ /    | |\n|    O     O-|-Ø"
+        case 2:
+            nombre = "el Bosque Maldito"
+            lv1 = "Ø--~     O |\n|     \   /| |\n|      \ / | |\n|       O  | |\n|     O----O"
+            lv2 = "O--~     O |\n|     \   /| |\n|      \ / | |\n|       Ø  | |\n|     O----O"
+            lv3 = "O--~     Ø |\n|     \   /| |\n|      \ / | |\n|       O  | |\n|     O----O"
+            lv4 = "O--~     O |\n|     \   /| |\n|      \ / | |\n|       O  | |\n|     O----Ø"
+            lv5 = "O--~     O |\n|     \   /| |\n|      \ / | |\n|       O  | |\n|     Ø----O"
+            lv6 = "| O--~     O |\n|     \   /| |\n| Ø    \ / | |\n| |     O  | |\n| |~~-O----O |"
+        case 3:
+            nombre = "el Castillo Abandonado . . ."
+            lv1 = "Ø-~~--~~-O |\n|         /  |\n| O-~--~-O   |\n|  \         |\n|   O       "
+            lv2 = "O-~~--~~-Ø |\n|         /  |\n| O-~--~-O   |\n|  \         |\n|   O       "
+            lv3 = "O-~~--~~-O |\n|         /  |\n| O-~--~-Ø   |\n|  \         |\n|   O       "
+            lv4 = "O-~~--~~-O |\n|         /  |\n| Ø-~--~-O   |\n|  \         |\n|   O       "
+            lv5 = "O-~~--~~-O |\n|         /  |\n| O-~--~-O   |\n|  \         |\n|   Ø       "
+            lv6 = "| O-~~--~~-O |\n|      Ø  /  |\n| O-~--~-O   |\n|  \   |     |\n|   O--|     |"
+    return lv1,lv2,lv3,lv4,lv5,lv6,nombre
+
+def level(Round,zona):
     '''Imprime el Mapa del Juego'''
+    lv1 = ""; lv2 = ""; lv3 = ""; lv4 = ""; lv5 = ""; lv6 = ""; nombre = ""
+    lv1,lv2,lv3,lv4,lv5,lv6,nombre = zonalv(zona)
     lv = Queue()
-    lv.enqueue("Ø     O--O |\n|  \   /   | |\n|   \ /    | |\n|    O     O");
-    lv.enqueue("O     O--O |\n|  \   /   | |\n|   \ /    | |\n|    Ø     O");
-    lv.enqueue("O     Ø--O |\n|  \   /   | |\n|   \ /    | |\n|    O     O")
-    lv.enqueue("O     O--Ø |\n|  \   /   | |\n|   \ /    | |\n|    O     O");
-    lv.enqueue("O     O--O |\n|  \   /   | |\n|   \ /    | |\n|    O     Ø")
+    lv.enqueue(lv1)
+    lv.enqueue(lv2)
+    lv.enqueue(lv3)
+    lv.enqueue(lv4)
+    lv.enqueue(lv5)
     if Round>1:
         for x in range(1,(Round)): lv.enqueue(lv.dequeue())
     print("\nMapa de rondas")
     print("--------------")
-    if Round==6: print("| O     O--O |\n|  \   /   | |\n|   \ /    | |\n|    O     O-|-Ø")
+    if Round==6: print(lv6)
     else: print("|",lv.first(),"|")
     print("--------------")
+    print(f"\nEstás en {nombre}!!")
     sleep(0.25)
 
-# 
+#
 # DECLARACIÓN DE VARIABLES --
 def vidaEXround(Round):
     '''Retorna la vida del enemigo dependiendo de la ronda'''
@@ -126,6 +159,7 @@ def attack(valattack):
             if Round == 6 and z == 2:
                 print(f'"Ataque Letal" del {personaje}!!')
                 sleep(0.75)
+                m.ThemeA(6)
                 ataquePJ = habA(ataquePJ)
         case "Tanque":
             ataquePJ=attackTan(Round)
@@ -247,6 +281,7 @@ def habA(ataquePJ):
             case 3:print("")
         if x!=3: sleep(0.75)
     ataquePJ = ataquePJ * 3
+    sleep(1)
     return ataquePJ
 
 def habT(ataquePJ2,check,chk,upgrade,att4,attlist):

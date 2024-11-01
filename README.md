@@ -14,7 +14,7 @@ En esta versión 4.0 llegaron nuevas caracteristicas:
 
 - Se agregaron 4 diferentes personajes, cada uno con una habilidad especial e historia
 - Se agregó un sistema de monedas para desbloquear personajes y comprar mejoras.
-- Se agregó un mapa de los niveles del juego.
+- Se agregaron 3 niveles distintos al juego, en cada combate podrás ver la zona y nivel donde te encuentras.
 
 ## Créditos y Atribución
 

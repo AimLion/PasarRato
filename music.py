@@ -16,28 +16,35 @@ def Init():
 
 # 
 # TEMAS MUSICALES --
-def FondoMusica(disco):
+def FondoMusicaPelea(disco):
     match disco:
-        # case 1:
-        #     mixer.music.load()
         case 1:
-            mixer.music.load('D:\maxim\Documents\Cosas en general\PASAR RATO\V2\papyrus.wav')
+            mixer.music.load('.\music\papyrus.wav')
         case 2:
-            mixer.music.load('D:\maxim\Documents\Cosas en general\PASAR RATO\V2\determination.wav')
+            mixer.music.load('.\music\determination.wav')
+        case 3:
+            mixer.music.load('.\music\Rutas.wav')
     mixer.music.play()
 
 def GameOver():
-    mixer.music.load('D:\maxim\Documents\Cosas en general\PASAR RATO\V2\over.wav')
+    mixer.music.load('.\music\over.wav')
     mixer.music.play()
 
 def TemaBoss():
-    mixer.music.load('D:\maxim\Documents\Cosas en general\PASAR RATO\V2\jefe.wav')
+    mixer.music.load('.\music\jefe.wav')
     mixer.music.play()
 
 def Win():
-    mixer.music.load('D:\maxim\Documents\Cosas en general\PASAR RATO\V2\win.wav')
+    mixer.music.load('.\music\win.wav')
     mixer.music.play()
 
 def Bye():
-    mixer.music.load('D:\maxim\Documents\Cosas en general\PASAR RATO\V2\hablarC.wav')
-    # mixer.music.play()
+    mixer.music.load('.\music\hablarC.wav')
+
+def Menu():
+    mixer.music.load('.\music\galaxylife.wav')
+    mixer.music.play()
+
+def mejoras():
+    mixer.music.load('.\music\mercado.wav')
+    mixer.music.play()

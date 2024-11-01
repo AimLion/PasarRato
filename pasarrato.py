@@ -2,98 +2,73 @@
 # IMPORTACIÓN METODOS --
 from time import sleep 
 from random import randint
-from stack_and_queue import Queue
-from MisFunciones_v2 import *
+from funciones import *
+import menu_interactive as interac
 import music as m
 import text as t
+import money as money
 
 limpiar()
 m.Init()
 
 # 
 # DECLARACIÓN VARIABLES --
-registroPJ = Queue()
-registroE = Queue()
-vidaPJ = 2500
-vidaE = 0
-curacion = 1500
-totalPJ = 0
-totalE = 0
-ataquePJ = 0
-ataqueE = 0
-ApromE = 0
-ApromPJ = 0
-Round = 1
-music = 0
-gameover = 0
-option = 0
-check = 0
-upgrade = 0
-chk = 0
-i = 0
-z = 0
+registroPJ = Queue();       registroE = Queue()
+vidaPJ = 2500; vidaE = 0;  totalPJ = 0;  totalE = 0; ataquePJ = 0; ataqueE = 0;  ApromE = 0;
+ApromPJ = 0;   Round = 1;  upgrade = 0;  chk = 0;    music = 0;    gameover = 0; option = 0;
+check = 0;     curacion = 1500;  i = 0;  z = 0;      cantm = 0;    newvidaPJ = 0; vendido = [0,0,0]
+personaje = "Peleador"; NoOption="Esta opción no es válida"; teclastr=""
 
 # 
 # PANTALLA DE CARGA -- 
 while True:
     m.Menu()
+    m.Vup()
     print("Bienvenido al Sistema de Combate Automatizado")
     print("#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#")
     print("\nMenu de opciones")
     print("\n1) Iniciar Partida")
-    print("2) Comprar Mejoras")
-    print("3) Salir")
+    print(f"2) Comprar Mejoras ( ${cantm} monedas )")
+    print(f"3) Cambia de personaje ({personaje})")
+    print("4) Salir")
     option = leer_entero("\nSeleccionar Opción: ")
     match option:
         case 2:
             if ( check == 1 ):
                 print("\nYa tienes una mejora!")
-                sleep(1.5)
-                limpiar()
+                sleep(1.5); limpiar()
             else:
                 limpiar()
-                upgrade,chk,check=(t.Mejoras())
-                sleep(1.5)
-                limpiar()
+                upgrade,chk,check,cantm=(t.Mejoras(cantm))
+                sleep(1.5); limpiar()
         case 1:
             sleep(1)
             music = randint(1,3)
             m.FondoMusicaPelea(music)
             while True:
-                tecla = leer_tecla("\n¿Listo para el combate?(S/N) → ")
-                print(tecla)
+                tecla,teclastr = enter("\n¿Listo para el combate?(S/N) → ")
+                print(teclastr)
                 sleep(1)
-                limpiar()
-                if tecla.upper() == 'N' or tecla.upper() == 'n' :
-                    m.Stop()
-                    upgrade=0
-                    Round=1
-                    check=0
-                    chk=0
-                    break
-                else:
-                    print("\nCargando combate . . .")
+                if tecla==b'N' or tecla==b'n' :
+                    m.Stop(); upgrade=0; Round=1
+                    check=0; chk=0; limpiar();break
+                elif tecla==b'S' or tecla==b's':
+                    limpiar()
+                    print("Cargando combate . . .")
                     sleep(1)
-                    vidaPJ = 2500
-                    totalPJ = 0
-                    totalE = 0
-                    ApromPJ = 0
-                    ApromE = 0
-                    i = 0
-                    z = 0
+                    if (newvidaPJ != 0):vidaPJ = newvidaPJ
+                    else: vidaPJ = 2500
+                    totalPJ = 0; totalE = 0; ApromPJ = 0; ApromE = 0;  i = 0;      z = 0
                     if (check==1) and (chk==2): vidaPJ=vidaPJ+upgrade
-                    for x in range(0,registroE.size()):
-                        registroE.dequeue()
-                    for y in range(0,registroPJ.size()):
-                        registroPJ.dequeue()
+                    for x in range(0,registroE.size()): registroE.dequeue()
+                    for y in range(0,registroPJ.size()): registroPJ.dequeue()
                     vidaE=(t.vidaEXround(Round))
                     print(f"\nInicia Combate!! RONDA ",Round)
+                    t.level(Round)
                     if (Round == 6):
-                        m.Stop()
-                        sleep(1)
+                        m.Stop(); sleep(1)
                         m.TemaBoss()
-                        sleep(1)
-                        t.jefe()
+                        sleep(1); t.jefe()
                     print("\nTu vida: ",vidaPJ," Su vida: ",vidaE)
                     # 
                     # COMBATE ---
@@ -104,75 +79,81 @@ while True:
                         # 
                         # ATAQUE ENEMIGO ---
                         if i == 2:
-                            ataqueE = randint(300,700)
-                            if (Round < 6):
-                                vidaPJ,totalE=(t.attackJ(vidaPJ,totalE,ataqueE,registroE))
+                            ataqueE = randint(400,800)
+                            if (Round < 6): vidaPJ,totalE=(t.attackJ(vidaPJ,totalE,ataqueE,registroE))
                             elif (Round == 6) and (check==1) and (chk==3): 
-                                tecla=leer_tecla("Quieres bloquear este ataque?: (s/n)")
-                                if tecla.upper() == 'N' or tecla.upper() == 'n' :
-                                    vidaPJ,totalE=(t.attackJ(vidaPJ,totalE,ataqueE,registroE))
-                                else:
-                                    print(f"\nHas bloqueado {ataqueE} de daño!")
-                                    chk=0
-                            else:
-                                vidaPJ,totalE=(t.attackJ(vidaPJ,totalE,ataqueE,registroE))
+                                while True:
+                                    tecla,teclastr=enter("Quieres bloquear este ataque?: (s/n)\n")
+                                    if tecla==b'N' or tecla==b'n' :
+                                        print(teclastr)
+                                        vidaPJ,totalE=(t.attackJ(vidaPJ,totalE,ataqueE,registroE));break
+                                    elif tecla==b'S' or tecla==b's':
+                                        print(f"Has bloqueado {ataqueE} de daño!"); chk=0;break
+                                    else: print(NoOption);sleep(1);limpiar()
+                            else: vidaPJ,totalE=(t.attackJ(vidaPJ,totalE,ataqueE,registroE))
                             i = 0
                             sleep(1)
                         # 
                         # ATAQUE PROPIO ---
-                        ataquePJ,vidaE,totalPJ=(t.attack(Round,check,chk,upgrade,vidaE,totalPJ,registroPJ))
+                        valattack=Round,check,chk,z,upgrade,personaje,vidaE,totalPJ,registroPJ,vidaPJ
+                        ataquePJ,vidaE,totalPJ=(t.attack(valattack))
                         sleep(1)
                         print("\nTu vida: ",vidaPJ," Su vida: ",vidaE)
                         # 
                         # CURACIÓN AMBOS ---
                         z = z + 1
-                        if (z == 9):
-                            print("\n¡¡El enemigo a recuperado 1500 de vida!!")
+                        if (z == 11):
                             vidaE = vidaE + curacion
-                            tecla = leer_tecla("\n¿Quieres curarte (S/N) → ")
-                            print(tecla)
-                            if tecla.upper() == 'S' or tecla.upper() == 's' :
-                                curacion = randint(300,1500)
-                                print(f"\nTe has curado ",curacion," de vida!!")
-                            else:
-                                continue
-                        if (vidaE<=0) or (vidaPJ<=0):
-                            break
+                            while True:
+                                print("\n¡¡El enemigo a recuperado 1500 de vida!!")
+                                tecla,teclastr = enter("\n¿Quieres curarte (S/N) → ")
+                                print(teclastr)
+                                if tecla==b'S' or tecla==b's' :
+                                    curacion = randint(300,1500)
+                                    print(f"\nTe has curado ",curacion," de vida!!")
+                                    break
+                                elif tecla==b'N' or tecla==b'n': break
+                                else: print(NoOption);t.sleep(1);limpiar()
+                        if (vidaE<=0) or (vidaPJ<=0): break
                         # 
                         # OPCIÓN RETIRO ---
-                        if (z >= 11):
-                            tecla = leer_tecla("\n¿Quieres retirarte (S/N) → ")
-                            print(tecla)
-                            if tecla.upper() == 'N' or tecla.upper() == 'n' :
-                                continue
-                            else:
-                                gameover = 1
-                                break
+                        while (vidaPJ<=200):
+                            tecla,teclastr = enter("\n¿Quieres retirarte (S/N) → ")
+                            print(teclastr)
+                            if tecla==b'N' or tecla==b'n' : break
+                            elif tecla==b'S' or tecla==b's': gameover = 1; break
+                            else: print(NoOption);t.sleep(1);limpiar()
+                        if gameover==1: break
                     # 
                     # DATOS FINALES Y RESULTADO ---
                     t.status(vidaPJ,vidaE,Round,z)
-                    ApromE = totalE / registroE.size()
                     ApromPJ = totalPJ / registroPJ.size()
+                    ApromE,cantm = t.oneshot(registroE,totalE,cantm)
                     t.resultados(registroPJ,totalPJ,ApromPJ,ApromE,totalE,registroE)
-
+                    if gameover==0: cantm = money.moneyxR(cantm,Round,vidaPJ)
+                    if personaje=="Peleador": cantm = t.habP(vidaPJ,cantm,Round)
+                    sleep(0.4)
                     if (vidaPJ <= 0) or (Round == 6):
-                        m.Stop()
-                        sleep(0.5)
-                        if (vidaPJ <= 0) or (gameover == 1): m.GameOver()
-                        if (Round == 6) and (vidaPJ > 0) and (gameover == 0): m.Win()
-                        sleep(11)
-                        Round = 1
-                        limpiar()
-                        m.Stop()
-                        gameover = 0
-                        upgrade = 0
-                        check = 0
+                        m.Stop(); sleep(0.5)
+                        if (vidaPJ <= 0) or (gameover == 1):
+                            m.GameOver(); cantm=cantm/2; print(f"\nPenalización de Gameover - Monedas / 2\nMonedas:{cantm}")
+                        if (Round == 6) and (vidaPJ > 0) and (gameover == 0): 
+                            print("Lograste derrotar al jefe!! ( + $250 monedas )")
+                            cantm = cantm +  250; m.Win();
+                        sleep(11); Round = 1; limpiar(); m.Stop();
+                        gameover = 0; upgrade = 0; check = 0
                         break
-                    else:
-                        Round = Round + 1
-                        continue
+                    else: Round = Round + 1; continue
+                else:print(NoOption); t.sleep(1); limpiar()
         case 3:
+            print("\nCargando personajes . . .")
+            m.seleccion()
+            personaje,newvidaPJ,cantm,vendido=interac.interactiveMenu("personaje","Peleador","Asesino","Tanque","Tirador","√",300,cantm,vendido)
+            limpiar()
+        case 4:
             break
+        case _:
+            print(NoOption); t.sleep(1); limpiar()
 
 t.lectura("Vuelva Pronto!!")
-sleep(2)
+sleep(1)

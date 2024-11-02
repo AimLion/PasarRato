@@ -32,6 +32,6 @@ zona = 1
 
 # 
 # VARIABLES MONEDAS
-cantm = 250
+cantm = 0
 roundm = 0
 vendido = [0,0,0]

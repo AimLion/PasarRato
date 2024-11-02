@@ -10,11 +10,33 @@ Juego autónomo para observar si ganas o no el combate.
 - Diferentes niveles de enemigos y jefe final
 - Sonidos y música de fondo para mejorar la experiencia de usuario
 
-En esta versión 4.0 llegaron nuevas caracteristicas: 
+En esta versión 4.1 llegaron nuevas caracteristicas: 
 
 - Se agregaron 4 diferentes personajes, cada uno con una habilidad especial e historia
 - Se agregó un sistema de monedas para desbloquear personajes y comprar mejoras.
 - Se agregaron 3 niveles distintos al juego, en cada combate podrás ver la zona y nivel donde te encuentras.
+
+## Requisitos e Instalación
+- Python 3.11
+- keyboard 0.13.5
+- pygame 2.5.2
+
+1.- **Clona el repositorio**
+```bash
+git clone https://github.com/AimLion/PasarRato.git
+```
+2.- **Crea un entorno virtual** (Recomendable)
+```powershell
+python -m venv pasarrato
+```
+3.- **Instala las dependencias**
+```powershell
+pip install -r reqquirements.txt
+```
+4.- **Ejecuta el programa**
+```
+python pasarrato.py
+```
 
 ## Créditos y Atribución
 

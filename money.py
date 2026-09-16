@@ -1,5 +1,6 @@
 # 
 # IMPORTACIÓN MÉTODOS --
+from translation import TxtPrint
 import text as t
 
 def moneyxR(money,Round,vidaPJ):
@@ -7,7 +8,7 @@ def moneyxR(money,Round,vidaPJ):
         vidaE = t.vidaEXround(Round)
         RoundMoney = vidaE / 50
         money = money + RoundMoney
-        print(f"\nHas obtenido ${RoundMoney} monedas!")
+        print(TxtPrint("round_money", RoundMoney=RoundMoney))
     return money
 
 def movM(money,costo):
@@ -18,10 +19,11 @@ def compra(money,costo,check):
     transaccion,compra=movM(money,costo)
     if transaccion == True:
         check = 1
-        print("\nFue exitosa la compra")
+        print(TxtPrint("succesful_purchase"))
         t.sleep(1)
         return compra,check
     else: 
-        print("\nNo tienes suficientes monedas")
+        print(TxtPrint("unsuccesful_purchase"))
         check = 0
+        t.sleep(1)
         return money,check

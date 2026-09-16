@@ -16,26 +16,6 @@ def leer_entero(_msj):
             break
 
 
-def leer_eleccion(_msj):
-    while True:
-        if _msj==2:
-            _msj = 0
-        else:
-            try:
-                return int(input(_msj))
-            except:
-                break
-
-
-def leer_float(_msj):
-    while True:
-        try:
-            return float(input(_msj))
-        except:
-            pitidoError()
-            print("Error! Debe dar un número entero. Intente de nuevo.\n")
-
-
 def leer_tecla(_msj):
     print(_msj, end="", flush=True)     # El flush=True es para que imprima la línea de una vez.
     tecla = getch()
@@ -48,27 +28,18 @@ def leer_tecla(_msj):
 def enter(_msj):
     print(_msj, end="", flush=True)
     tecla = getch()
+    print(tecla.decode("ANSI"))
     # print(ord(tecla))
     # if tecla == b'\x1b':    # ESC
     #     return "Escape"
     # else:
-    return tecla,tecla.decode("ANSI")
+    return tecla
 
 def limpiar():
     if os.name == 'nt':
         os.system("CLS")        # Windows
     else:
         os.system("Clear")      # Linux
-
-
-def pausa_final():
-    print("Presione una tecla para Terminar.")
-    getch()     # msvcrt.getch()
-
-
-def pausa(_msj=""):
-    print(_msj, end="", flush=True)
-    return getch()
 
 class Stack:
     ''' Clase para implementar una Pila de comportamiento estricto que solo permite operaciones de push y pop

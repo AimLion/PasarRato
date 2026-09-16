@@ -1,83 +1,75 @@
 # 
 # IMPORTACIÓN MÉTODOS --
+from translation import TxtPrint
 from funciones import *
 from random import randint
 from money import compra
 from time import sleep
 import keyboard as kb
-import music as m
+import music
 
-m.Init()
+music.Init()
 # 
 # TEXTOS A IMPRIMIR --
 def jefe():
     '''Método enfocado en la presentación del Jefe'''
-    txt0 = "\nAlgo pasa . . ."
-    txt1 = "Este nivel no debería existir . . ."
-    txt2 = "\n-Sientes corrientes de viento rodeandote- . . ."
-    txt3 = "\nLos enemigos no están . . ."
-    txt4 = "A donde se han ido? . . ."
-    txt5 = "\n-Una voz se escucha al fondo- . . ."
-    txt6 = "\nTodos se han reunido contra ti . . ."
-    txt7 = "Esta es la batalla final . . ."
+    secuencia_textos = [
+        "jefe_txt0", "jefe_txt1", "jefe_txt2", "jefe_txt3",
+        "jefe_txt4", "jefe_txt5", "jefe_txt6", "jefe_txt7"
+    ]
 
     for x in range(0,8):
-        match x:
-            case 0: sleep(0.1);print(txt0)
-            case 1: print(txt1)
-            case 2: print(txt2)
-            case 3: print(txt3); sleep(0.5)
-            case 4: print(txt4)
-            case 5: print(txt5)
-            case 6: print(txt6)
-            case 7: print(txt7)
-        if (x != 7): sleep(2)
-        else: sleep(1)
+        if x == 0: sleep(0.1)
+        print(TxtPrint(secuencia_textos[x]))
+        if x == 3: sleep(0.5)
+        if x != 7: sleep(2)
 
+# TODO Corregir variables de 1 sola vocal a 2 vocales, para que se pueda traducir correctamente. Ejemplo: "vidaE" a "vidaEnemigo"
 def status(vidaPJ,vidaE,Round,z,zona):
     '''Muestra los Resultados al Final de cada Ronda parte 1'''
-    if (vidaE <= 0) and (vidaPJ>0): print(F"\nGran combate!! Has sobrevivido ",z," turnos con ",vidaPJ," de vida")
+    if (vidaE <= 0) and (vidaPJ>0): print(TxtPrint("victory_message", z=z, vidaPJ=vidaPJ))
     elif(vidaE<=0) and (vidaPJ<=0):
-        print(f"\nA sido un gran combate, se declara un empate.")
-        print(f"\nLlegaste hasta el round ",Round,"En la zona ",zona)
+        print(TxtPrint("draw_message"))
+        print(TxtPrint("round_zone_message", Round=Round, zona=zona))
     else:
-        print(f"\nBuen intento, ha sobrevivido el enemigo con ",vidaE," de vida")
-        print(f"\nLlegaste hasta el round: ",Round,"En la zona ",zona)
+        print(TxtPrint("defeat_message", vidaE=vidaE))
+        print(TxtPrint("round_zone_message", Round=Round, zona=zona))
 
 def resultados(registroPJ,totalPJ,ApromPJ,ApromE,totalE,registroE):
     '''Muestra los Resultados al Final de cada Ronda parte 2'''
-    print(f"\nCantidad de daño propio: ",registroPJ.all_items()," Total → ",totalPJ)
-    print(f"Cantidad de daño del enemigo: ",registroE.all_items()," Total → ",totalE)
-    print(f"\nTu daño promedio: ",ApromPJ)
-    print(f"Su daño promedio: ",ApromE)
+    print(TxtPrint("player_dmg_message", registroPJ=registroPJ.all_items(), totalPJ=totalPJ))
+    print(TxtPrint("enemy_dmg_message", registroE=registroE.all_items(), totalE=totalE))
+    print(TxtPrint("player_avg_dmg_message", ApromPJ=ApromPJ))
+    print(TxtPrint("enemy_avg_dmg_message", ApromE=ApromE))
 
-def lectura(lectura):
-    '''Método de lecuta de Sans'''
-    m.Bye()
-    txt=lectura
-    t1=""
-    for y in range(0,len(txt)):
-        t1 = t1 + txt[y]
-        m.Play()
-        print(t1, end="\r")
+def lectura(texto):
+    '''Método de lectura de Sans'''
+    music.Bye()
+    for char in texto:
+        music.Play()
+        print(char, end="", flush=True)
         sleep(0.07)
-        if (txt[y] == " "):
-            m.Stop()
+        if char == " ":
+            music.Stop()
             sleep(0.5)
+        if char == "\n":
+            music.Stop()
+            sleep(0.7)
+    print()
 
 def attackJ(vidaPJ,totalE,ataqueE,registroE):
     '''Método de impresión y ataque del Jefe'''
     vidaPJ = vidaPJ - ataqueE
     totalE = totalE + ataqueE
     registroE.enqueue(ataqueE)
-    print(f"Te a bajado {ataqueE} de vida")
+    print(TxtPrint("attacked_enemy_message", ataqueE=ataqueE))
     print(" ")
     return vidaPJ,totalE
 
 def oneshot(registroE,totalE,money):
     '''Oneshot, simplemente'''
     if(totalE==0):
-        print(f"\nHAS ONESHOTEADO AL ENEMIGO!! +$100")
+        print(TxtPrint("oneshot_message"))
         money = money + 100
         ApromE = 0;registroE.enqueue(0)
     else: ApromE = totalE / registroE.size()
@@ -88,29 +80,46 @@ def zonalv(zona):
     lv1 = ""; lv2 = ""; lv3 = ""; lv4 = ""; lv5 = ""; lv6 = ""; nombre = ""
     match zona:
         case 1:
-            nombre = "las Llanuras Solitarias"
+            nombre = TxtPrint("zone1_name")
             lv1 = "Ø     O--O |\n|  \   /   | |\n|   \ /    | |\n|    O     O"
             lv2 = "O     O--O |\n|  \   /   | |\n|   \ /    | |\n|    Ø     O"
             lv3 = "O     Ø--O |\n|  \   /   | |\n|   \ /    | |\n|    O     O"
             lv4 = "O     O--Ø |\n|  \   /   | |\n|   \ /    | |\n|    O     O"
             lv5 = "O     O--O |\n|  \   /   | |\n|   \ /    | |\n|    O     Ø"
             lv6 = "| O     O--O |\n|  \   /   | |\n|   \ /    | |\n|    O     O-|-Ø"
+            # MAPA ZONA 1
+            # |O     O--O |
+            # | \   /   | |
+            # |  \ /    | |
+            # |   O     O |
         case 2:
-            nombre = "el Bosque Maldito"
+            nombre = TxtPrint("zone2_name")
             lv1 = "Ø--~     O |\n|     \   /| |\n|      \ / | |\n|       O  | |\n|     O----O"
             lv2 = "O--~     O |\n|     \   /| |\n|      \ / | |\n|       Ø  | |\n|     O----O"
             lv3 = "O--~     Ø |\n|     \   /| |\n|      \ / | |\n|       O  | |\n|     O----O"
             lv4 = "O--~     O |\n|     \   /| |\n|      \ / | |\n|       O  | |\n|     O----Ø"
             lv5 = "O--~     O |\n|     \   /| |\n|      \ / | |\n|       O  | |\n|     Ø----O"
             lv6 = "| O--~     O |\n|     \   /| |\n| Ø    \ / | |\n| |     O  | |\n| |~~-O----O |"
+            # MAPA ZONA 2
+            # |Ø--~     O |
+            # |    \   /| |
+            # |     \ / | |
+            # |      O  | |
+            # |    O----O | 
         case 3:
-            nombre = "el Castillo Abandonado . . ."
+            nombre = TxtPrint("zone3_name")
             lv1 = "Ø-~~--~~-O |\n|         /  |\n| O-~--~-O   |\n|  \         |\n|   O       "
             lv2 = "O-~~--~~-Ø |\n|         /  |\n| O-~--~-O   |\n|  \         |\n|   O       "
             lv3 = "O-~~--~~-O |\n|         /  |\n| O-~--~-Ø   |\n|  \         |\n|   O       "
             lv4 = "O-~~--~~-O |\n|         /  |\n| Ø-~--~-O   |\n|  \         |\n|   O       "
             lv5 = "O-~~--~~-O |\n|         /  |\n| O-~--~-O   |\n|  \         |\n|   Ø       "
             lv6 = "| O-~~--~~-O |\n|      Ø  /  |\n| O-~--~-O   |\n|  \   |     |\n|   O--|     |"
+            # MAPA ZONA 3
+            # |Ø-~~--~~-O |
+            # |        /  |
+            # |O-~--~-O   |
+            # | \         |
+            # |  O        |
     return lv1,lv2,lv3,lv4,lv5,lv6,nombre
 
 def level(Round,zona):
@@ -125,12 +134,12 @@ def level(Round,zona):
     lv.enqueue(lv5)
     if Round>1:
         for x in range(1,(Round)): lv.enqueue(lv.dequeue())
-    print("\nMapa de rondas")
+    print(TxtPrint("map_levels"))
     print("--------------")
     if Round==6: print(lv6)
     else: print("|",lv.first(),"|")
     print("--------------")
-    print(f"\nEstás en {nombre}!!")
+    print(TxtPrint("actual_zone", nombre=nombre))
     sleep(0.25)
 
 #
@@ -157,14 +166,14 @@ def attack(valattack):
         case "Asesino":
             ataquePJ=attackA(Round)
             if Round == 6 and z == 2:
-                print(f'"Ataque Letal" del {personaje}!!')
+                print(TxtPrint("special_abiliti_assassin", personaje=personaje))
                 sleep(0.75)
-                m.ThemeA(6)
+                music.ThemeA(6)
                 ataquePJ = habA(ataquePJ)
         case "Tanque":
             ataquePJ=attackTan(Round)
             if Round == 6 and z == 4 and vidaPJ>=3000:
-                print(f'"Golpe Duo" del {personaje}!!\n')
+                print(TxtPrint("special_abiliti_tank", personaje=personaje))
                 sleep(0.7)
                 duoattack = randint(1,3)
                 match duoattack:
@@ -182,32 +191,34 @@ def attack(valattack):
         case "Tirador":
             ataquePJ=attackTir(Round)
             if Round == 6 and z == 3:
-                print(f'Tic . . .Tac . . . del {personaje}!!')
+                print(TxtPrint("special_abiliti_shooter", personaje=personaje))
                 sleep(0.75)
-                m.ThemeTir(6)
+                music.ThemeTir(6)
                 sleep(0.4)
-                print(f"\nPrimer Disparo de {ataquePJ} !")
+                print(TxtPrint("first_atk_shooter", ataquePJ=ataquePJ))
                 sleep(1)
                 attlist=habT(ataquePJ2,check,chk,upgrade,att4,attlist)
             else:
                 ataquePJ2=attackTir(Round)
                 if(check==1) and (chk==1):ataquePJ=ataquePJ+upgrade;ataquePJ2=ataquePJ2+upgrade
-                print(f"Le has bajado {ataquePJ} y {ataquePJ2} de vida al enemigo")
+                print(TxtPrint("attacked_shooter_message", ataquePJ=ataquePJ, ataquePJ2=ataquePJ2))
                 sleep(0.2)
                 ataquePJ = ataquePJ + ataquePJ2
             att = 2
     if att != 2:
         if(check==1) and (chk==1):ataquePJ=ataquePJ+upgrade
     if att == 1: 
-        print(f"Tu y el {duopj} le han bajado {ataquePJ} de vida al enemigo!!")
+        print(TxtPrint("attacked_tank_message", ataquePJ=ataquePJ, duopj=duopj))
         att = 0
     elif att == 2: att = 0; ataquePJ = ataquePJ + attlist
-    else: print(f"Le has bajado {ataquePJ} de vida al enemigo")
+    else: print(TxtPrint("attacked_message", ataquePJ=ataquePJ))
     vidaE = vidaE - ataquePJ
     totalPJ = totalPJ + ataquePJ
     registroPJ.enqueue(ataquePJ)
     return ataquePJ,vidaE,totalPJ
 
+# 
+# VARIABLES DE ATAQUE DE CADA PERSONAJE --
 def attackP(Round):
     match Round:
         case 1: ataquePJ = randint(50,300)
@@ -248,25 +259,27 @@ def attackTir(Round):
         case 6: ataquePJ = randint(304,404)
     return ataquePJ
 
+# 
+# VOZ PRESENTACIÓN DE CADA PERSONAJE --
 def temaS(personaje):
     '''Voz de cada personaje al escojer'''
     match personaje:
         case "Peleador":
             vos = randint(1,5)
-            m.ThemeP(vos)
+            music.ThemeP(vos)
             if vos == 5:sleep(3.5)
             else:sleep(5.5)
         case "Asesino":
             vos = randint(1,5)
-            m.ThemeA(vos)
+            music.ThemeA(vos)
             sleep(4.5)
         case "Tanque":
             vos = randint(1,5)
-            m.ThemeTan(vos)
+            music.ThemeTan(vos)
             sleep(3.6)
         case "Tirador":
             vos = randint(1,5)
-            m.ThemeTir(vos)
+            music.ThemeTir(vos)
             sleep(3.6)
 
 # 
@@ -289,101 +302,92 @@ def habT(ataquePJ2,check,chk,upgrade,att4,attlist):
         ataquePJ2 = attackTir(6)
         if(check==1) and (chk==1):ataquePJ2=ataquePJ2+upgrade
         att4.enqueue(ataquePJ2)
-        match y:
+        match y: 
             case 1:
-                print(f"Segundo Disparo de {att4.first()} !!")
-                attlist = attlist + att4.first()
-                att4.dequeue()
-                sleep(1)
+                print(TxtPrint("Second_atk_shooter", numAtaque=att4.first()))
+                # attlist = attlist + att4.first()
+                # att4.dequeue()
+                # sleep(1)
             case 2:
-                print(f"Tercer Disparo de {att4.first()} !!!")
-                attlist = attlist + att4.first()
-                att4.dequeue()
-                sleep(1)
+                print(TxtPrint("Third_atk_shooter", numAtaque=att4.first()))
+                # attlist = attlist + att4.first()
+                # att4.dequeue()
+                # sleep(1)
             case 3:
-                print(f"Cuarto Disparo de {att4.first()} !!!")
-                attlist = attlist + att4.first()
-                att4.dequeue()
-                sleep(1)
-        sleep(0.4)
+                print(TxtPrint("fourth_atk_shooter", numAtaque=att4.first()))
+                # attlist = attlist + att4.first()
+                # att4.dequeue()
+                # sleep(1)
+        attlist = attlist + att4.first()
+        att4.dequeue()
+        sleep(1.4)
     return attlist
 
 def habP(vidaPJ,money,Round):
+    comision = 50
     if vidaPJ>=1000:
-        money = money + 50
-        print('Has ganado +$50 por "Mi comisión!"')
-    elif Round == 6 and vidaPJ>=1000:
-        money = money + 150
-        print('Has ganado +$150 por "Mi comisión!"')
+        if Round == 6: comision = comision * 3
+        money = money + comision
+        print(TxtPrint("special_abiliti_fighter", comision=comision))
     return money
 
 # 
 # MÉTODO MEJORAS --
 def Mejoras(money):
     '''Este método es de las mejoras, que incluye la Catafixia y las opciones de esta'''
-    m.mejoras()
+    music.mejoras()
     upgrade = 0
     chk = 0
     check = 0
-    print("Menu de Mejoras")
-    print("-#-#-#-#-#-#-#-")
-    print(f"\nMonedas: ${money}")
-    print("\nOpciones:")
-    print("1) Aumentar Ataque +150 - Precio $250")
-    print("2) Aumentar Vida +250 - Precio $150")
-    print("3) Bloquear un Ataque del Jefe - Precio $500")
-    print("4) Probar la Catafixia")
-    print("5) Regresar al Menu")
-    option = leer_entero("\nSeleccione su mejora: ")
+    print(TxtPrint("menu_upgrade", money=money))
+    option = leer_entero(TxtPrint("select_menu"))
     match option:
         case 1:
             money,check=compra(money,250,check)
-            if check==1: print("\nSe a aumentado tu ataque +150"); upgrade = 150; chk = 1
+            if check==1: print(TxtPrint("upgrade1_success")); upgrade = 150; chk = 1
         case 2:
             money,check=compra(money,150,check)
-            if check==1: print("\nSe a aumentado tu vida +250"); upgrade = 250; chk = 2
+            if check==1: print(TxtPrint("upgrade2_success")); upgrade = 250; chk = 2
         case 3:
             money,check=compra(money,500,check)
-            if check==1: print("\nAhora puedes bloquear 1 ataque del Jefe"); chk = 3
+            if check==1: print(TxtPrint("upgrade3_success")); chk = 3
         case 4:
-            print("\nCargando Catafixia . . .")
+            print(TxtPrint("loading_catafixia"))
             sleep(1)
             upgrade,chk=(catafixia())
             if chk == -1: check = 0
             else: check = 1
         case 5:
-            print("\nRegresando al menu . . .")
+            print(TxtPrint("return_menu"))
         case _:
-            print("Opción no válida")
-            limpiar()
+            print(TxtPrint("invalid_option")); sleep(1); limpiar()
     return upgrade,chk,check,money
 
 def catafixia():
     upgrade = 0
     chk = 0
+    caja = [1,2,3]
+    y=randint(0,2)
     limpiar()
-    lectura("Bienvenido a la Catafixia!")
-    print("\n")
+    lectura(TxtPrint("welcome_catafixia"))
     sleep(0.7)
-    lectura("Pulsa espacio para sacar tu ficha")
+    lectura(TxtPrint("activate_catafixia"))
     while True:
         limpiar()
-        print("Bienvenido a la Catafixia!")
-        print("\nPulsa espacio para sacar tu ficha")
-        caja = [1,2,3]
-        y=randint(0,2)
-        sleep(0.05)
+        print(TxtPrint("welcome_catafixia"))
+        print(TxtPrint("activate_catafixia"))
+        sleep(0.1)
         if kb.is_pressed("space"):
-            print(f"\nTomaste la ficha número: {caja[y]}")
             caja = caja[y]
+            print(TxtPrint("selected_box", caja=caja))
             break
     caja1,caja2,caja3=(opciones())
     sleep(1)
-    print(f"\n¿Qué has ganado? . . .")
+    print(TxtPrint("show_box"))
     sleep(1)
     match caja:
         case 1:
-            print(f"\nHas ganado {caja1}")
+            print(TxtPrint("buff_message", caja=caja1))
             if(caja1=="Una espada de fuego!! (+500 ataque)"):
                 upgrade=500
                 chk=1
@@ -393,13 +397,13 @@ def catafixia():
             elif(caja1=="Un escudo"):
                 upgrade=0
                 chk=3
-        case 2: print(f"\nHas ganado {caja2}")
+        case 2: print(TxtPrint("buff_message", caja=caja2))
         case 3:
             if (caja3=="Mejor suerte para la próxima!"):
-                print(f"\nLastima, {caja3}")
+                print(TxtPrint("nerf_message", caja=caja3))
                 chk=-1
             else:
-                print(f"\nHas ganado {caja3}")
+                print(TxtPrint("buff_message", caja=caja3))
                 if(caja3=="Una poción venenosa (-500 hp)"):
                     upgrade=-500
                     chk=2
@@ -407,13 +411,13 @@ def catafixia():
                     upgrade=-500
                     chk=1
     sleep(1)
-    print("\n¿Que había en las demás cajas?")
+    print(TxtPrint("show_other_boxes"))
     sleep(1)
-    print(f"\nEn caja 1 hay: {caja1}")
+    print(TxtPrint("content_boxes", caja=1, contenido=caja1))
     sleep(0.5)
-    print(f"En caja 2 hay: {caja2}")
+    print(TxtPrint("content_boxes", caja=2, contenido=caja2))
     sleep(0.5)
-    print(f"En caja 3 hay: {caja3}")
+    print(TxtPrint("content_boxes", caja=3, contenido=caja3))
     sleep(2)
     return upgrade,chk
 

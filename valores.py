@@ -1,7 +1,5 @@
 # 
 # VARIABLES GLOBALES --
-NoOption = "Esta opción no es válida"
-teclastr = ""
 upgrade = 0
 music = 0
 check = 0
@@ -32,6 +30,6 @@ zona = 1
 
 # 
 # VARIABLES MONEDAS
-cantm = 0
+cantm = 150
 roundm = 0
 vendido = [0,0,0]
